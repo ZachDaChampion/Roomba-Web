@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { grid, selected, selectedStrength } from "./ui-store";
+  import { grid, selected, selectedStrength } from "./ui-state";
 
-  let slider;
+  let slider: HTMLInputElement;
 </script>
 
 <style>
@@ -121,8 +121,8 @@
       bind:this={slider}
       on:input={() => {
         if ($selected === null) return;
-        else if ($selected.dir === 'r') $grid[$selected.row][$selected.col].right = slider.value;
-        else if ($selected.dir === 'd') $grid[$selected.row][$selected.col].down = slider.value;
+        else if ($selected.dir === 'r') $grid[$selected.row][$selected.col].right = Number(slider.value);
+        else if ($selected.dir === 'd') $grid[$selected.row][$selected.col].down = Number(slider.value);
       }}
       min="0"
       max="1"

@@ -2,7 +2,6 @@ import { Writable, writable, Readable, derived } from "svelte/store";
 
 export const grid: Writable<Grid<ui.Cell>> = writable(null);
 
-// TODO: setter
 export const selected: Writable<{
   row: number;
   col: number;
@@ -17,3 +16,6 @@ export const selectedStrength: Readable<number | null> = derived(
     return $grid[$selected.row][$selected.col].down;
   }
 );
+
+export const draggingStart: Writable<boolean> = writable(false);
+export const draggingGoal: Writable<boolean> = writable(false);

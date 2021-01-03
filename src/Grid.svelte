@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { grid, selected } from "./ui-store";
+  import { grid, selected } from "./ui-state";
 
   export let rows: number;
   export let cols: number;
