@@ -1,4 +1,5 @@
 <script>
+	import Config from "./Config.svelte";
 	import Grid from "./Grid.svelte";
 </script>
 
@@ -19,5 +20,9 @@
 
 <main>
 	<h1>Roomba Control Panel</h1>
-	<Grid rows="15" cols="15" />
+	<div style="display: flex; flex-direction: row">
+		<Grid rows="15" cols="15" />
+		<div style="margin: auto" />
+		<Config />
+	</div>
 </main>

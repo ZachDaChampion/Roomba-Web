@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { grid } from "./store";
+  import { grid, selected } from "./ui-store";
 
   export let rows: number;
   export let cols: number;
-
-  let selected: { row: number; col: number; dir: "r" | "d" } = null;
 
   // generate grid
   const result: Grid<ui.Cell> = Array(Array(0));
@@ -12,10 +10,10 @@
     result.push(Array(0));
     for (let j = 0; j < cols; ++j) {
       result[i].push({
-        x: i,
-        y: j,
-        down: i < rows - 1 ? i / rows : null,
-        right: j < cols - 1 ? i / rows : null,
+        row: i,
+        col: j,
+        down: i < rows - 1 ? 1 - i / rows : null,
+        right: j < cols - 1 ? 1 - i / rows : null,
       });
     }
   }
@@ -25,7 +23,7 @@
   function derivePathColor(weight: number) {
     if (weight < 0) weight = 0;
     if (weight > 1) weight = 1;
-    let val = Math.round(weight * 255);
+    let val = Math.round((1 - weight) * 255);
     return `rgb(${val}, ${val}, ${val})`;
   }
 </script>
@@ -89,37 +87,36 @@
   }
 </style>
 
-<div>
-  <div
-    style="display: flex; flex-direction: column; position: absolute; z-index: 1;">
-    {#each { length: rows } as _, row}
-      <div style="display: flex; flex-direction: row;">
-        {#each { length: cols } as _, col}
-          {#if $grid[row][col].right !== null}
-            <span
-              class="connection-right{selected !== null && selected.row === row && selected.col === col && selected.dir === 'r' ? ' highlighted' : ''}"
-              on:click={() => {
-                selected = { row: row, col: col, dir: 'r' };
-              }}
-              style="left: {col * 44}px; top: {row * 44}px; background-color: {derivePathColor($grid[row][col].right)}" />
-          {/if}
-          {#if $grid[row][col].down !== null}
-            <span
-              class="connection-bottom{selected !== null && selected.row === row && selected.col === col && selected.dir === 'd' ? ' highlighted' : ''}"
-              on:click={() => {
-                selected = { row: row, col: col, dir: 'd' };
-              }}
-              style="left: {col * 44}px; top: {row * 44}px; background-color: {derivePathColor($grid[row][col].down)}" />
-          {/if}
-        {/each}
-      </div>
-    {/each}
-  </div>
-  <div style="display: flex; flex-direction: column; position: absolute;">
-    {#each { length: rows } as _, row}
-      <div style="display: flex; flex-direction: row;">
-        {#each { length: cols } as _, col}<span class="cell" />{/each}
-      </div>
-    {/each}
-  </div>
+<div
+  style="display: flex; flex-direction: column; position: absolute; z-index: 1;">
+  {#each { length: rows } as _, row}
+    <div style="display: flex; flex-direction: row;">
+      {#each { length: cols } as _, col}
+        {#if $grid[row][col].right !== null}
+          <span
+            class="connection-right{$selected !== null && $selected.row === row && $selected.col === col && $selected.dir === 'r' ? ' highlighted' : ''}"
+            on:click={() => {
+              $selected = { row: row, col: col, dir: 'r' };
+            }}
+            style="left: {col * 44}px; top: {row * 44}px; background-color: {derivePathColor($grid[row][col].right)}" />
+        {/if}
+        {#if $grid[row][col].down !== null}
+          <span
+            class="connection-bottom{$selected !== null && $selected.row === row && $selected.col === col && $selected.dir === 'd' ? ' highlighted' : ''}"
+            on:click={() => {
+              $selected = { row: row, col: col, dir: 'd' };
+            }}
+            style="left: {col * 44}px; top: {row * 44}px; background-color: {derivePathColor($grid[row][col].down)}" />
+        {/if}
+      {/each}
+    </div>
+  {/each}
+</div>
+
+<div style="display: flex; flex-direction: column;">
+  {#each { length: rows } as _, row}
+    <div style="display: flex; flex-direction: row;">
+      {#each { length: cols } as _, col}<span class="cell" />{/each}
+    </div>
+  {/each}
 </div>

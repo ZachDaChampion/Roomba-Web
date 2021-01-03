@@ -14,8 +14,8 @@ declare namespace ui {
   }
 
   export interface Cell {
-    x: number;
-    y: number;
+    row: number;
+    col: number;
     down: number | null;
     right: number | null;
   }
