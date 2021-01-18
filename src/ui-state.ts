@@ -16,6 +16,3 @@ export const selectedStrength: Readable<number | null> = derived(
     return $grid[$selected.row][$selected.col].down;
   }
 );
-
-export const draggingStart: Writable<boolean> = writable(false);
-export const draggingGoal: Writable<boolean> = writable(false);

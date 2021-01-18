@@ -1,10 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import type { Writable } from "svelte/store";
-
   export let color: string;
-  export let draggingvar: Writable<boolean>;
   export let x: number;
   export let y: number;
   export let gridW: number;
@@ -14,6 +11,7 @@
   let origOffset: Point;
   let offset: Point = { x: 0, y: 0 };
   let pos: Point = { x: x * 44, y: y * 44 };
+  let dragging = false;
 
   function clamp(num: number, min: number, max: number) {
     return num < min ? min : num > max ? max : num;
@@ -27,8 +25,12 @@
     };
   });
 
-  document.onmousemove = (event) => {
-    if ($draggingvar) {
+  document.addEventListener("mouseup", () => {
+    dragging = false;
+  });
+
+  document.addEventListener("mousemove", (event) => {
+    if (dragging) {
       event.preventDefault();
       pos = {
         x: clamp(
@@ -47,8 +49,20 @@
         ),
       };
     }
-  };
+  });
 </script>
+
+<span
+  class="cell"
+  bind:this={cell}
+  on:mousedown={(event) => {
+    event.preventDefault();
+    let rect = cell.getBoundingClientRect();
+    offset = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    dragging = true;
+  }}
+  style="background-color: {color}; left: {pos.x}px; top: {pos.y}px;"
+/>
 
 <style>
   .cell {
@@ -63,14 +77,3 @@
     transition-duration: 0.1s;
   }
 </style>
-
-<span
-  class="cell"
-  bind:this={cell}
-  on:mousedown={(event) => {
-    event.preventDefault();
-    let rect = cell.getBoundingClientRect();
-    offset = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    $draggingvar = true;
-  }}
-  style="background-color: {color}; left: {pos.x}px; top: {pos.y}px;" />
